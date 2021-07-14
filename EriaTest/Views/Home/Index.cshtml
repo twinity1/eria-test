@@ -1,0 +1,69 @@
+﻿@model AssigmentViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using GridMvc
+@using EriaTest.Helpers
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">
+            <h3>New assigment</h3>
+        </div>
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input class="form-control" type="text" asp-for="Title">
+                <span class="text-danger" asp-validation-for="Title"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskTypeId"></label>
+                <select class="form-control" type="text" asp-for="TaskTypeId">
+                    <option value="null">--- Select ---</option>
+                    @foreach (var item in Model.AssigmentTypes)
+                    {
+                        <option value="@item.Id">@item.Title</option>
+                    }
+                </select>
+                <span class="text-danger" asp-validation-for="TaskTypeId"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Start"></label>
+                <input class="form-control" type="text" asp-for="Start">
+                <span class="text-danger" asp-validation-for="Start"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="End"></label>
+                <input class="form-control" type="text" asp-for="End">
+                <span class="text-danger" asp-validation-for="End"></span>
+            </div>
+            <button class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h3>Assigments overview</h3>
+        
+        @{
+            var grid = Html.Grid(Model.Assigments).Columns(columns =>
+            {
+                columns.Add(x => x.Id);
+                columns.Add(x => x.Title);
+                columns.Add(x => x.Type.Title).Titled("Type");
+                columns.Add()
+                    .Sanitized(false)
+                    .Encoded(false)
+                    .RenderValueAs(product => Html.Partial("_GridActions", product).GetString());
+            }).Filterable().Sortable();
+        
+            grid.RenderOptions.GridCountDisplayName = "Total item count";
+            grid.RenderOptions.ShowGridItemsCount = true;
+        }
+        
+        @grid
+    </div>
+</div>
+
